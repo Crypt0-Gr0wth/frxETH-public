@@ -1,0 +1,7 @@
+# Chapitre 13 — Limites et perimetre de ce parcours
+
+Ce parcours couvre le coeur du systeme frxETH tel qu il existe dans le depot FraxFinance/frxETH-public a la date du clone : la creation du token frxETH, le processus de mint via frxETHMinter, la gestion de la pile de validateurs via OperatorRegistry, et le coffre de rendement sfrxETH avec sa mecanique de cycles xERC4626.
+
+Sont volontairement laisses hors champ : toute la gouvernance plus large de l ecosysteme Frax (FXS, veFXS, le stablecoin FRAX lui-meme et ses mecanismes de collateralisation), qui vivent dans d autres depots et ne font pas partie de ce contest de code ; les scripts de deploiement (script/deployGoerli.s.sol, deployMainnet.s.sol) qui relevent de l operationnel plutot que de la logique du protocole ; les evolutions plus recentes de l ecosysteme Frax autour du staking (Frax v3, integrations cross-chain de frxETH) qui ne figurent pas dans cette version du depot clone ; et les details internes des bibliotheques externes (ERC4626 de Solmate, ERC20Permit d OpenZeppelin), traitees comme des briques deja documentees ailleurs.
+
+L objectif reste le meme que pour les parcours precedents : donner une comprehension solide et verifiee du mecanisme central — ici, comment 32 ETH deposes se transforment en un validateur actif, et comment le rendement de ce validateur revient lineairement aux detenteurs de sfrxETH — sans pretendre couvrir l integralite de l ecosysteme Frax.
