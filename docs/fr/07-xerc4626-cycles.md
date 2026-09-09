@@ -1,0 +1,9 @@
+# Chapitre 7 — xERC4626 : la mecanique des cycles de recompenses
+
+La bibliotheque xERC4626 (empruntee au design de xERC20) est le coeur du calcul de rendement de sfrxETH. Son objectif est d eviter qu un depot de recompenses ponctuel ne fasse instantanement sauter le taux de change frxETH/sfrxETH, ce qui creerait une fenetre de MEV exploitable (deposer juste avant l injection de recompenses, retirer juste apres).
+
+Le mecanisme repose sur quatre variables : storedTotalAssets (le solde comptabilise en dur), lastRewardAmount (le montant de la derniere injection de recompenses, en cours de deverrouillage), lastSync (l instant de la derniere synchronisation) et rewardsCycleEnd (la fin du cycle courant, toujours un multiple de rewardsCycleLength).
+
+totalAssets() ne retourne pas simplement storedTotalAssets : si le cycle est termine, elle ajoute l integralite de lastRewardAmount ; sinon, elle ajoute une fraction lineaire calculee comme lastRewardAmount * (block.timestamp - lastSync) / (rewardsCycleEnd - lastSync). Le rendement apparait donc progressivement, seconde par seconde, plutot que d un coup.
+
+syncRewards() est la fonction qui declenche un nouveau cycle : elle calcule nextRewards comme la difference entre le solde reel de frxETH detenu par le contrat et ce qui est deja comptabilise (storedTotalAssets + lastRewardAmount), autrement dit tout frxETH supplementaire envoye au contrat sfrxETH (par le multisig Frax, en pratique, correspondant au rendement de staking accumule) devient la nouvelle reserve a deverrouiller. Elle ne peut etre appelee qu apres la fin du cycle courant (sinon SyncError()), et calcule la fin du prochain cycle en arrondissant au multiple superieur de rewardsCycleLength — avec une garde qui rallonge le cycle d une periode complete si moins de 5% de sa duree restait avant l alignement naturel, pour eviter des cycles anormalement courts.
